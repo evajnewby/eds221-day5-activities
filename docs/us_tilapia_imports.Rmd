@@ -1,0 +1,47 @@
+---
+title: "us_tilapia_imports"
+author: "Eva Newby"
+date: "2024-08-16"
+output: html_document
+editor_options: 
+  chunk_output_type: inline
+---
+
+```{r}
+
+install.packages("tidyr" 
+                 )
+library(tidyverse)
+
+us_tilapia_imports <- read_csv(here::here("data", "us_tilapia_imports.csv"))
+us_tilapia_imports
+
+
+#colnames(us_tilapia_imports)[1:27] <- seq(from = 1992, to = 2018, by = 1)
+
+us_tilapia_import_output <- us_tilapia_imports %>% pivot_longer(cols = -country, names_to = "year", values_to = "imports")
+
+us_tilapia_import_output <- us_tilapia_import_output %>%
+  dplyr::mutate(imports = as.numeric(imports))
+
+class(us_tilapia_import_output$imports)
+
+library(dplyr)
+
+yearly_tilapia_tot <- us_tilapia_import_output |>
+  dplyr::group_by(year) |>
+  summarize(yearly_tilapia_tot = sum(imports, na.rm = TRUE))
+
+ggplot(data = yearly_tilapia_tot, aes(x = year, y = yearly_tilapia_tot)) +
+  geom_point() + 
+  labs(x = "Year", y = "Import Output")
+
+ggsave(here::here("figs", "yearly_tilapia_totals.png"))
+```
+```{r}
+yearly_tilapia_subset <- us_tilapia_import_output |> 
+  filter(country %in% c("Mexico", "Costa Rica", "Ecuador", "Honduras"))
+
+```
+
+

@@ -1,0 +1,37 @@
+---
+title: "runoff_volumes"
+author: "Eva Newby"
+date: "2024-08-16"
+output: html_document
+editor_options: 
+  chunk_output_type: console
+---
+
+```{r setup, include=FALSE}
+knitr::opts_chunk$set(echo = TRUE)
+```
+
+```{r}
+library(tidyverse)
+
+source(here::here("src", "storm_runoff.R"))
+
+```
+
+```{r}
+i <- seq(from = 0.6, to = 0.8, by = 0.01)
+predict_runoff( i, 182)
+
+df_runoff <- data.frame(i, predict_runoff(i , 182))
+print(df_runoff)
+```
+
+```{r}
+ggplot(data = df_runoff, aes(x = i, y = predict_runoff.i..182.)) +
+  geom_point() +
+  geom_line() + 
+  labs(x = "Fraction of watershed that is impervious", y = "Stormwater runoff volume (cubic ft)")
+ 
+
+```
+
